@@ -1,0 +1,5 @@
+node_modules
+test
+.env
+.idea
+gpt-bot.memory-card.json

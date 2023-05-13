@@ -1,0 +1,23 @@
+{
+  "extends": "@chatie/tsconfig",
+  "compilerOptions": {
+    "outDir": "dist",
+    "noPropertyAccessFromIndexSignature": false
+  },
+  "exclude": [
+    "node_modules/",
+    "dist/",
+    "tests/fixtures/"
+  ],
+  "include": [
+    "src/**/*.ts",
+    "examples/*.ts",
+    "scripts/**/*.ts",
+    "tests/**/*.ts",
+    "test/*.ts"
+  ],
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  }
+}
