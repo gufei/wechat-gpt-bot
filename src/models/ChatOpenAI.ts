@@ -58,7 +58,7 @@ export const run = async (prompt: string, memoryKey: string = "history") => {
             memory: memory,
             llm: createChatOpenAIModel(modelSettings),
             prompt: chatPrompt,
-            verbose: process.env.DEBUG ? true : false
+            verbose: process.env.VERBOSE ? true : false
         });
 
         const response = await chain.call({input: prompt})

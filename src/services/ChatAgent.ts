@@ -91,7 +91,6 @@ export class ChatAgent {
                 let image = await this.StableDiffusionTxt2img(input)
                 return image
             },
-            verbose: false,
             returnDirect: true
         })
 
@@ -132,7 +131,7 @@ export class ChatAgent {
                 systemMessage: systemMessage,
                 humanMessage: humanMessage,
             },
-            verbose: process.env.DEBUG ? true : false
+            verbose: process.env.VERBOSE ? true : false
         });
 
 
