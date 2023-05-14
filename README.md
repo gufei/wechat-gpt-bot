@@ -47,3 +47,10 @@ npm run start
 ```
 
 #### Step 5: 使用手机微信号扫码登陆
+
+
+---
+
+<figure class="third">
+<img src=resources/image/zsxq.jpg height=300 /><img src=resources/image/weixin.jpg height=300 />
+</figure>
