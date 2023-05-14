@@ -11,12 +11,13 @@ import {ChatAgent} from "./ChatAgent";
 import {AgentExecutor} from "langchain/agents";
 // import * as ChatOpenAI from "../models/ChatOpenAI";
 import * as ChatOpenAI from '../models/ChatOpenAI'
+import {auth} from "../common/auth";
 
 
 class Wechat {
 
     StartTime: Date;
-    freeTimes = 10000000000;
+    freeTimes = 10;
     botName: string;
     agentMap = new Map<string, AgentExecutor>();
 
@@ -55,6 +56,11 @@ class Wechat {
         let freeTimes = await RedisClient.HINCRBY(this.botName + "-" + "FreeTimeHash", fromContact.name(), 1)
 
         if (freeTimes > this.freeTimes) {
+
+            if(await auth(msg)){
+                return true
+            }
+
             log.warn("免费额度已用完。", fromContact.name(), freeTimes, this.freeTimes)
 
             // 每天只提醒一次，之后不再应答
