@@ -139,7 +139,12 @@ class Wechat {
         const fromContact = msg.talker()
         const room = msg.room()
         if (room) {
-            await msg.say("@" + fromContact.name() + " " + text)
+            if(fromContact.name()){
+                await msg.say("@" + fromContact.name() + " " + text)
+            }else{
+                await msg.say(text)
+            }
+
         } else {
             await msg.say(text)
         }
