@@ -35,7 +35,7 @@ class Wechat {
     private async validation(msg: Message): Promise<boolean> {
 
         const fromContact = msg.talker()
-        // const room = msg.room()
+        const room = msg.room()
 
         if (fromContact.name().includes("微信团队")) {
             log.warn("消息来源名称包含 '微信团队'", fromContact.name())
@@ -51,6 +51,8 @@ class Wechat {
             log.warn("消息来源不是个人。消息来源：", fromContact.type())
             return false
         }
+
+
 
         // 免费额度，优先记录，免费额度包括群里的
         let freeTimes = await RedisClient.HINCRBY(this.botName + "-" + "FreeTimeHash", fromContact.name(), 1)
@@ -109,8 +111,13 @@ class Wechat {
         if (msg.self()) {
             return
         }
+
         // const fromContact = msg.talker()
-        // const room = msg.room()
+        const room = msg.room()
+
+        if(room && ! await msg.mentionSelf()){
+            return
+        }
 
         let validation = await this.validation(msg)
         if (!validation) {
