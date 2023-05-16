@@ -183,7 +183,7 @@ class Wechat {
         let key = fromContact.name()
 
         if (room) {
-            key = room.id + " # " + key
+            key = room.id
         }
 
         try {
