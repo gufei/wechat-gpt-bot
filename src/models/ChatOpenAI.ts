@@ -69,6 +69,14 @@ export const run = async (prompt: string, memoryKey: string = "history") => {
         // console.log(response)
         return response.response
     } catch (e: any) {
+        if (memoryMap.has(memoryKey)) {
+            const memory = memoryMap.get(memoryKey)
+            if(memory instanceof BufferWindowMemory) {
+                await memory.clear()
+            }else{
+                memoryMap.delete(memoryKey)
+            }
+        }
         return "暂时无法提供服务，请稍候再试。以下是错误信息\n" + e.message.substring(0, 200)
     }
 }
