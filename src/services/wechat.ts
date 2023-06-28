@@ -57,10 +57,14 @@ class Wechat {
         // 免费额度，优先记录，免费额度包括群里的
         let freeTimes = await RedisClient.HINCRBY(this.botName + "-" + "FreeTimeHash", fromContact.name(), 1)
 
-        if (freeTimes > this.freeTimes) {
+        if (freeTimes > this.freeTimes || room) {
 
             if(await auth(msg)){
                 return true
+            }
+
+            if(room){
+                return false
             }
 
             log.warn("免费额度已用完。", fromContact.name(), freeTimes, this.freeTimes)
