@@ -8,13 +8,13 @@ import {
 } from "langchain/prompts";
 
 import type {ModelSettings} from "../utils/types";
-import {GPT_35_TURBO} from "../utils/constants";
+import {GPT_35_TURBO, GPT_4} from "../utils/constants";
 
 export const createChatOpenAIModel = (settings: ModelSettings = {}): ChatOpenAI => {
-    if (!settings.customModelName){
+    if (!settings.customModelName) {
         settings.customModelName = GPT_35_TURBO;
     }
-    if (!settings.customModelName){
+    if (!settings.customModelName) {
         settings.customTemperature = 0.75;
     }
 
@@ -29,7 +29,7 @@ export const createChatOpenAIModel = (settings: ModelSettings = {}): ChatOpenAI 
 // 用于存储不同的聊天记录的
 let memoryMap = new Map<string, BufferWindowMemory>();
 
-export const run = async (prompt: string, memoryKey: string = "history") => {
+export const run = async (prompt: string, memoryKey: string = "history", gpt4: boolean = false) => {
     try {
 
         let chatPrompt = ChatPromptTemplate.fromPromptMessages([
@@ -53,6 +53,9 @@ export const run = async (prompt: string, memoryKey: string = "history") => {
         let modelSettings: ModelSettings = {
             customTemperature: 0.75
         }
+        if (gpt4){
+            modelSettings.customModelName = GPT_4
+        }
 
         const chain = new ConversationChain({
             memory: memory,
@@ -71,9 +74,9 @@ export const run = async (prompt: string, memoryKey: string = "history") => {
     } catch (e: any) {
         if (memoryMap.has(memoryKey)) {
             const memory = memoryMap.get(memoryKey)
-            if(memory instanceof BufferWindowMemory) {
+            if (memory instanceof BufferWindowMemory) {
                 await memory.clear()
-            }else{
+            } else {
                 memoryMap.delete(memoryKey)
             }
         }

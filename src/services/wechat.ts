@@ -191,8 +191,23 @@ class Wechat {
         }
 
         try {
+            let gpt4 = false
+            if (fromContact.name().includes("BOT佳恒")) {
+                gpt4 = true
+            }
+
+
+
+            if (room) {
+                let topic = await room.topic()
+                if(topic.includes("百事通ChatGPT") || topic.includes("决战 WEB4")){
+                    gpt4 = true
+                }
+            }
+
+
             // 这里注释的是直接使用聊天工具，可以根据群和个人分别进行上下文记忆
-            let text = await ChatOpenAI.run(prompt, key)
+            let text = await ChatOpenAI.run(prompt, key,gpt4)
 
             await this.MsgSay(text, msg)
         } catch (e: any) {
