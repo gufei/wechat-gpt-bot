@@ -194,16 +194,14 @@ class Wechat {
             if (fromContact.name().includes("BOT佳恒")) {
                 gpt4 = true
             }
-
-
-            if (room) {
-                gpt4 = false
-                let topic = await room.topic()
-                if (topic.includes("百事通ChatGPT") || topic.includes("决战 WEB4")) {
-                    gpt4 = true
-                }
-            }
-
+            // if (room) {
+            //     gpt4 = false
+            //     let topic = await room.topic()
+            //     if (topic.includes("百事通ChatGPT") || topic.includes("决战 WEB4")) {
+            //         gpt4 = true
+            //     }
+            // }
+            //
             if (gpt4){
                 log.info("GPT模型为GPT4")
             }
