@@ -193,6 +193,7 @@ class Wechat {
         try {
             let gpt4 = false
             if (fromContact.name().includes("BOT佳恒")) {
+                log.info("GPT模型为GPT4")
                 gpt4 = true
             }
 
@@ -201,6 +202,7 @@ class Wechat {
             if (room) {
                 let topic = await room.topic()
                 if(topic.includes("百事通ChatGPT") || topic.includes("决战 WEB4")){
+                    log.info("GPT模型为GPT4")
                     gpt4 = true
                 }
             }
