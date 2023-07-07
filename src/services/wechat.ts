@@ -53,17 +53,16 @@ class Wechat {
         }
 
 
-
         // 免费额度，优先记录，免费额度包括群里的
         let freeTimes = await RedisClient.HINCRBY(this.botName + "-" + "FreeTimeHash", fromContact.name(), 1)
 
         if (freeTimes > this.freeTimes || room) {
 
-            if(await auth(msg)){
+            if (await auth(msg)) {
                 return true
             }
 
-            if(room){
+            if (room) {
                 return false
             }
 
@@ -76,7 +75,7 @@ class Wechat {
             })
 
             if (freeRemind) {
-                await this.MsgSay("您的免费额度已用完",msg)
+                await this.MsgSay("您的免费额度已用完", msg)
             }
             return false
         }
@@ -119,7 +118,7 @@ class Wechat {
         // const fromContact = msg.talker()
         const room = msg.room()
 
-        if(room && ! await msg.mentionSelf()){
+        if (room && !await msg.mentionSelf()) {
             return
         }
 
@@ -143,9 +142,9 @@ class Wechat {
         const fromContact = msg.talker()
         const room = msg.room()
         if (room) {
-            if(fromContact.name()){
+            if (fromContact.name()) {
                 await msg.say("@" + fromContact.name() + " " + text)
-            }else{
+            } else {
                 await msg.say(text)
             }
 
@@ -176,7 +175,7 @@ class Wechat {
 
             await this.MsgSay(result.output, msg)
         } catch (e: any) {
-            await this.ChatCall(prompt,msg)
+            await this.ChatCall(prompt, msg)
         }
     }
 
@@ -193,23 +192,25 @@ class Wechat {
         try {
             let gpt4 = false
             if (fromContact.name().includes("BOT佳恒")) {
-                log.info("GPT模型为GPT4")
                 gpt4 = true
             }
 
 
-
             if (room) {
+                gpt4 = false
                 let topic = await room.topic()
-                if(topic.includes("百事通ChatGPT") || topic.includes("决战 WEB4")){
-                    log.info("GPT模型为GPT4")
+                if (topic.includes("百事通ChatGPT") || topic.includes("决战 WEB4")) {
                     gpt4 = true
                 }
             }
 
+            if (gpt4){
+                log.info("GPT模型为GPT4")
+            }
+
 
             // 这里注释的是直接使用聊天工具，可以根据群和个人分别进行上下文记忆
-            let text = await ChatOpenAI.run(prompt, key,gpt4)
+            let text = await ChatOpenAI.run(prompt, key, gpt4)
 
             await this.MsgSay(text, msg)
         } catch (e: any) {
