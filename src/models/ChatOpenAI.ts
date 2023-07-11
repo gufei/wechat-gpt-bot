@@ -45,6 +45,11 @@ export const run = async (prompt: string, memoryKey: string = "history", gpt4: b
             memory = new BufferWindowMemory(({returnMessages: true, memoryKey: memoryKey}))
         }
 
+        if (prompt.includes("/reset") && memory instanceof BufferWindowMemory) {
+            await memory.clear()
+            return "Context has been cleaned up"
+        }
+
         // 如果是默认key，则清除历史记录，防止串台
         if (memoryKey == "history" && memory instanceof BufferWindowMemory) {
             await memory.clear()
@@ -53,7 +58,7 @@ export const run = async (prompt: string, memoryKey: string = "history", gpt4: b
         let modelSettings: ModelSettings = {
             customTemperature: 0.75
         }
-        if (gpt4){
+        if (gpt4) {
             modelSettings.customModelName = GPT_4
         }
 
