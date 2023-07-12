@@ -71,7 +71,7 @@ async function app() {
             commandOptions({isolated: true}),
             'notify_message', 0
         ).then(async (v) => {
-            log.info("notify_message : %s", v?.element)
+            // log.info("notify_message : %s", v?.element)
             if (bot.isLoggedIn) {
                 try {
                     if (v !== null) {
