@@ -16,6 +16,8 @@ import Wechat from "./services/wechat";
 
 // @ts-ignore
 import qrcodeTerminal from "qrcode-terminal"
+import RedisClient from "./common/redis";
+import {commandOptions} from 'redis';
 
 const botname = process.env.BOTNAME ?? "gpt-bot"
 
@@ -55,13 +57,56 @@ async function app() {
         await wechat.generate(message)
     }
 
+
     bot.on('scan', onScan)
     bot.on('login', onLogin)
     bot.on('message', onMessage)
 
 
     await bot.start()
+
+    // 通知功能，利用消息进行中转，可扩展为多模通知
+    function quant_notify() {
+        RedisClient.blPop(
+            commandOptions({isolated: true}),
+            'notify_message', 0
+        ).then(async (v) => {
+            log.info('notify_message', v)
+            if (bot.isLoggedIn) {
+                try {
+                    if (v !== null) {
+                        let obj = JSON.parse(v.element)
+                        let roomArr = new Array()
+                        if (obj.typename == "news") {
+                            roomArr = ['新闻快讯']
+                        } else if (obj.typename == "stock") {
+                            roomArr = ['百事通ChatGPT']
+                        } else {
+                            roomArr = ['百事通ChatGPT']
+                        }
+                        for (const room_name of roomArr) {
+                            let notify_room = await bot.Room.find({topic: room_name})
+                            if (typeof notify_room !== 'undefined') {
+                                await notify_room.say(obj.msg)
+                            }
+                        }
+                    }
+
+                } catch (e: any) {
+                    log.info("notify_message", e.message)
+                }
+
+            }
+
+            await quant_notify()
+            return
+        });
+    }
+
+    quant_notify()
+
+
 }
 
-app()
-    .catch(console.error)
+
+app().catch(console.error)
