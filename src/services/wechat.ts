@@ -11,7 +11,7 @@ import {ChatAgent} from "./ChatAgent";
 import {AgentExecutor} from "langchain/agents";
 // import * as ChatOpenAI from "../models/ChatOpenAI";
 import * as ChatOpenAI from '../models/ChatOpenAI'
-import {auth} from "../common/auth";
+import {auth, is_gpt4} from "../common/auth";
 
 
 class Wechat {
@@ -190,18 +190,7 @@ class Wechat {
         }
 
         try {
-            let gpt4 = false
-            if (fromContact.name().includes("BOT佳恒")) {
-                gpt4 = true
-            }
-            // if (room) {
-            //     gpt4 = false
-            //     let topic = await room.topic()
-            //     if (topic.includes("百事通ChatGPT") || topic.includes("决战 WEB4")) {
-            //         gpt4 = true
-            //     }
-            // }
-            //
+            let gpt4 = await is_gpt4(msg)
             if (gpt4){
                 log.info("GPT模型为GPT4")
             }
