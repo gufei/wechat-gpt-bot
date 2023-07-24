@@ -57,6 +57,10 @@ class Wechat {
         let freeTimes = await RedisClient.HINCRBY(this.botName + "-" + "FreeTimeHash", fromContact.name(), 1)
 
         if (freeTimes > this.freeTimes || room) {
+            // hxy，群聊返回true
+            if(this.botName.includes("hxy") && room){
+                return true
+            }
 
             if (await auth(msg)) {
                 return true
