@@ -1,4 +1,5 @@
 import {createChatOpenAIModel, run as ChatOpenAIRun} from "../models/ChatOpenAI";
+import OpenAI from "openai";
 import {Calculator} from "langchain/tools/calculator";
 import {initializeAgentExecutorWithOptions} from "langchain/agents";
 import {AIPluginTool, DadJokeAPI, DynamicTool, RequestsGetTool, RequestsPostTool, Serper} from "langchain/tools";
@@ -7,6 +8,8 @@ import type {Message} from "wechaty";
 import {FileBox} from "file-box";
 import {OpenAIEmbeddings} from "langchain/embeddings/openai";
 import { WebBrowser } from "langchain/tools/webbrowser";
+
+const openai = new OpenAI();
 
 const systemMessage = `助理是一个由OpenAI训练的大型语言模型。
 
@@ -44,6 +47,22 @@ export class ChatAgent {
     //     // this.msg = msg
     //     this.key = key
     // }
+
+    async OpenaiTxt2Img(prompt: string){
+
+        const image = await openai.images.generate(
+            {
+                model: "dall-e-3",
+                prompt: prompt,
+                response_format: 'b64_json'
+            });
+        if (image.data[0] && image.data[0].b64_json) {
+            let imageBox = FileBox.fromBase64(image.data[0].b64_json, "generate_img.png")
+            await this.msg.say(imageBox)
+        }
+
+        return this.msg.text() + "----AI绘图已完成"
+    }
 
     async StableDiffusionTxt2img(prompt: string, negativePrompt: string = "") {
 
@@ -88,7 +107,8 @@ export class ChatAgent {
             name: "draw",
             description: "这个工具可以绘制图像、画图、生成照片、生成图片。输入的是图像的英文提示，注意必须是英文提示。",
             func: async (input: string) => {
-                let image = await this.StableDiffusionTxt2img(input)
+                // let image = await this.StableDiffusionTxt2img(input)
+                let image = await this.OpenaiTxt2Img(input)
                 return image
             },
             returnDirect: true
